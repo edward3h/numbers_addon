@@ -2,7 +2,7 @@
 
 ## Feedback
 You can open feature requests or bug reports as 
-[issues](issues). Please check 
+[issues](/edward3h/numbers_addon/issues). Please check 
 if there is a relevant existing issue before opening a new one, and
 include as much detail as you can in your issue.
 

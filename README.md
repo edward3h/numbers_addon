@@ -2,12 +2,13 @@
 
 Adds number blocks and 100 charts to Minecraft to help kids practice counting. Supports Minecraft Bedrock Edition (AKA MCBE, MCPE) 1.16.0 and up.
 
-![Screenshot Vertical Grid](doc/verticalFar.png | width=300)
-![Screenshot Horizontal Grid](doc/horizontalBuried.png | width=300)
+![Screenshot Vertical Grid](doc/verticalFar.png)
+
+![Screenshot Horizontal Grid](doc/horizontalBuried.png)
 
 # How to Use
 
-Download the `mcpack` files from the [latest release](releases/latest) page. There are two files, for behavior and resource packs.
+Download the `mcpack` files from the [latest release](/edward3h/numbers_addon/releases/latest) page. There are two files, for behavior and resource packs.
 
 On most systems Minecraft can now install the packs as soon as you download them or open them. If that doesn't work, check installation instructions at MCPEDL: [Android](https://mcpedl.com/how-to-install-minecraft-pe-mods-for-android/) | [iOs](https://mcpedl.com/how-to-install-minecraft-pe-mods-for-ios/) | [Windows 10](https://mcpedl.com/how-to-install-addons-for-windows-10/).
 
