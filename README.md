@@ -8,7 +8,7 @@ Adds number blocks and 100 charts to Minecraft to help kids practice counting. S
 
 # How to Use
 
-Download the `mcpack` files from the [latest release](/edward3h/numbers_addon/releases/latest) page. There are two files, for behavior and resource packs.
+Download the `mcpack` files from the [latest release](https://github.com/edward3h/numbers_addon/releases/latest) page. There are two files, for behavior and resource packs.
 
 On most systems Minecraft can now install the packs as soon as you download them or open them. If that doesn't work, check installation instructions at MCPEDL: [Android](https://mcpedl.com/how-to-install-minecraft-pe-mods-for-android/) | [iOs](https://mcpedl.com/how-to-install-minecraft-pe-mods-for-ios/) | [Windows 10](https://mcpedl.com/how-to-install-addons-for-windows-10/).
 
