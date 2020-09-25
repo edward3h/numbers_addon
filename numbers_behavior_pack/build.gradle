@@ -1,0 +1,98 @@
+import groovy.json.StreamingJsonBuilder
+
+task generateBlocks {
+    outputs.files((1..100).collect{ n -> file("$buildDir/pack/blocks/number${n}.json")})
+    doLast {
+        (1..100).each { n ->
+            file("$buildDir/pack/blocks/number${n}.json").withWriter {w ->
+                def builder = new StreamingJsonBuilder(w)
+                builder {
+                    format_version(1, 16, 0)
+                    "minecraft:block" {
+                        description {
+                            identifier "numbers:number$n"
+                            is_experimental false
+                            register_to_creative_menu true
+                        }
+                        components {
+                            "minecraft:map_color" "#0000FF"
+                            "minecraft:destroy_time"(n / 10)
+                            "minecraft:explosion_resistance" n
+                            "minecraft:friction" 0.6
+                            "minecraft:flammable" {
+                                "flame_odds" 0
+                                "burn_odds" 0
+                            }
+                            "minecraft:block_light_absorption" 0
+                            "minecraft:block_light_emission" 0.250
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+task generateFunction {
+    outputs.file "$buildDir/pack/functions/grid100.mcfunction"
+    doLast {
+        file("$buildDir/pack/functions/grid100.mcfunction").withPrintWriter {w ->
+            w.println "fill ~ ~ ~ ~11 ~ ~11 stone 0"
+            for (d in 1..10) {
+                for (a in 1..10) {
+                    def n = a + (10 - d) * 10
+                    w.println "setblock ~$a ~ ~$d numbers:number$n"
+                }
+            }
+        }
+    }
+}
+
+task generateFunctionVertical {
+    outputs.file "$buildDir/pack/functions/grid100vertical.mcfunction"
+    doLast {
+        file("$buildDir/pack/functions/grid100vertical.mcfunction").withPrintWriter {w ->
+            w.println "fill ~ ~ ~ ~11 ~11 ~ stone 0"
+            for (d in 1..10) {
+                for (a in 1..10) {
+                    def n = a + (d - 1) * 10
+                    w.println "setblock ~$a ~$d ~ numbers:number$n"
+                }
+            }
+        }
+    }
+}
+
+task generateManifest {
+    outputs.file "$buildDir/pack/manifest.json"
+    doLast {
+        file("$buildDir/pack/manifest.json").withWriter { w ->
+            def builder = new StreamingJsonBuilder(w)
+            builder {
+                format_version(2)
+                header {
+                    name "Numbers"
+                    description "Number blocks up to 100"
+                    uuid behaviorPackId
+                    version arrVersion
+                    min_engine_version([1, 16, 0])
+                }
+                modules(["ignore"]) {
+                    type "data"
+                    uuid behaviorModuleId
+                    version arrVersion
+                }
+                dependencies(["foo"]) {
+                    uuid resourcePackId
+                    version arrVersion
+                }
+            }
+        }
+    }
+}
+
+task dist(type: Zip) {
+    dependsOn assemble
+    archiveExtension = "mcpack"
+    from "$buildDir/pack"
+}

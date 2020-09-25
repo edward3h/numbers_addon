@@ -1,0 +1,20 @@
+
+allprojects {
+    apply plugin: 'base'
+
+    group 'org.ethelred'
+    version '1.0.0'
+
+    assemble.dependsOn tasks.matching { it.name.startsWith "generate" }
+    build.dependsOn tasks.matching { it.name == "dist" }
+}
+
+
+ext {
+    resourcePackId = "9B879BC3-33F7-4A41-8F18-D9BD471270FE"
+    resourceModuleId = "4122527A-BF7A-415D-B3FB-57D024F2DE37"
+    behaviorPackId = "55D7F1D7-CCB9-4E21-A49A-65A6734BA57F"
+    behaviorModuleId = "FE10D09D-3342-49DF-A54A-B71255801FC9"
+
+    arrVersion = version.split(/\./).collect { v -> Integer.parseInt(v)}
+}

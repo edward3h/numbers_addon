@@ -1,0 +1,105 @@
+import groovy.json.*
+
+group 'org.ethelred'
+version '1.0.0'
+
+task baseImage {
+    outputs.file "$buildDir/gen/base_blue.png"
+    doLast {
+        ["magick", "convert", "-size", "32x32", "xc:black",
+         "-fill", "MidnightBlue", "-stroke", "none",
+         "-draw", 'circle 14,14 1,1',
+         "-fill", "blue",
+         "-draw", 'circle 14,14 3,3',
+         "$buildDir/gen/base_blue.png"].execute().waitForProcessOutput(System.out, System.err)
+    }
+}
+
+task generateImages {
+    dependsOn baseImage
+    inputs.file "$buildDir/gen/base_blue.png"
+    outputs.files((1..100).collect { n -> file("$buildDir/pack/textures/blocks/number${n}.png")})
+    doLast {
+        def base = file("$buildDir/gen/base_blue.png")
+        def font = file("assets/JetBrainsMono-Bold.ttf")
+        mkdir "$buildDir/pack/textures/blocks"
+        (1..100).each { n ->
+            def out = file("$buildDir/pack/textures/blocks/number${n}.png")
+            ["magick", "convert", base, "-gravity", "Center",
+             "-fill", "white", "-stroke", "none",
+             "-font", font,
+             "-pointsize", n == 100 ? 18 : 24,
+             "-draw", "text 0,0 '$n'",
+             out].execute().waitForProcessOutput(System.out, System.err)
+
+        }
+    }
+}
+
+task generateBlocks {
+    outputs.file "$buildDir/pack/blocks.json"
+    doLast {
+        file("$buildDir/pack/blocks.json").withWriter { w ->
+            def builder = new StreamingJsonBuilder(w)
+            builder {
+                format_version([1, 16, 0])
+                (1..100).each { n ->
+                    "numbers:number$n" {
+                        textures "number$n"
+                        sound "wood"
+                    }
+                }
+            }
+        }
+    }
+}
+
+task generateTerrain {
+    outputs.file "$buildDir/pack/textures/terrain_texture.json"
+    doLast {
+        file("$buildDir/pack/textures/terrain_texture.json").withWriter { w ->
+            def builder = new StreamingJsonBuilder(w)
+            builder {
+                resource_pack_name "numbers"
+                texture_name "atlas.terrain"
+                texture_data {
+                    (1..100).each { n ->
+                        "number$n" {
+                            textures "textures/blocks/number$n"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+task generateManifest {
+    outputs.file "$buildDir/pack/manifest.json"
+    doLast {
+        file("$buildDir/pack/manifest.json").withWriter { w ->
+            def builder = new StreamingJsonBuilder(w)
+            builder {
+                format_version(2)
+                header {
+                    name "Numbers"
+                    description "Number blocks up to 100"
+                    uuid resourcePackId
+                    version arrVersion
+                    min_engine_version([1, 16, 0])
+                }
+                modules(["ignore"]) {
+                    type "resources"
+                    uuid resourceModuleId
+                    version arrVersion
+                }
+            }
+        }
+    }
+}
+
+task dist(type: Zip) {
+    dependsOn assemble
+    archiveExtension = "mcpack"
+    from "$buildDir/pack"
+}

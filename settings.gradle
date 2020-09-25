@@ -1,0 +1,4 @@
+rootProject.name = 'numbers_addon'
+include 'numbers_resource_pack'
+include 'numbers_behavior_pack'
+
