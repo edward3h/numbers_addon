@@ -60,4 +60,7 @@ This project is licensed under the [GNU GPL](LICENSE).
   * Initial release.
   * Number blocks 1 - 100
   * Functions grid100, grid100vertical
-
+* 1.0.1
+  * Number 0
+  * Operators +, -, x, /, =, ?
+  * Added text names
