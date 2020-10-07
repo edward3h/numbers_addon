@@ -4,4 +4,5 @@ bin/
 .gradle
 !gradle-wrapper.jar
 **/build/
+.project
 

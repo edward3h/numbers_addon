@@ -3,7 +3,7 @@ allprojects {
     apply plugin: 'base'
 
     group 'org.ethelred'
-    version '1.0.0'
+    version '1.0.1'
 
     assemble.dependsOn tasks.matching { it.name.startsWith "generate" }
     build.dependsOn tasks.matching { it.name == "dist" }
@@ -17,4 +17,7 @@ ext {
     behaviorModuleId = "FE10D09D-3342-49DF-A54A-B71255801FC9"
 
     arrVersion = version.split(/\./).collect { v -> Integer.parseInt(v)}
+
+    numberRange = 0..100
+    operators = [plus: '+', minus: '-', multiply: '×', divide: '÷', equals: '=', question: '?']
 }

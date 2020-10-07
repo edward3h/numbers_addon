@@ -1,9 +1,6 @@
 import groovy.json.*
 
-group 'org.ethelred'
-version '1.0.0'
-
-task baseImage {
+task baseNumberImage {
     outputs.file "$buildDir/gen/base_blue.png"
     doLast {
         ["magick", "convert", "-size", "32x32", "xc:black",
@@ -15,21 +12,54 @@ task baseImage {
     }
 }
 
-task generateImages {
-    dependsOn baseImage
+task baseOperatorImage {
+    outputs.file "$buildDir/gen/base_grey.png"
+    doLast {
+        ["magick", "convert", "-size", "32x32", "xc:black",
+         "-fill", "SlateGray4", "-stroke", "none",
+         "-draw", 'polygon 14,0 18,0 32,14 32,18 18,32 14,32 0,18 0,14',
+         "-fill", "SlateGray3",
+         "-draw", 'polygon 16,1 31,16 16,31 1,16',
+         "$buildDir/gen/base_grey.png"].execute().waitForProcessOutput(System.out, System.err)
+    }
+}
+
+task generateNumberImages {
+    dependsOn baseNumberImage
     inputs.file "$buildDir/gen/base_blue.png"
-    outputs.files((1..100).collect { n -> file("$buildDir/pack/textures/blocks/number${n}.png")})
+    outputs.files(numberRange.collect { n -> file("$buildDir/pack/textures/blocks/number${n}.png")})
     doLast {
         def base = file("$buildDir/gen/base_blue.png")
         def font = file("assets/JetBrainsMono-Bold.ttf")
         mkdir "$buildDir/pack/textures/blocks"
-        (1..100).each { n ->
+        numberRange.each { n ->
             def out = file("$buildDir/pack/textures/blocks/number${n}.png")
             ["magick", "convert", base, "-gravity", "Center",
              "-fill", "white", "-stroke", "none",
              "-font", font,
              "-pointsize", n == 100 ? 18 : 24,
              "-draw", "text 0,0 '$n'",
+             out].execute().waitForProcessOutput(System.out, System.err)
+
+        }
+    }
+}
+
+task generateOperatorImages {
+    dependsOn baseOperatorImage
+    inputs.file "$buildDir/gen/base_grey.png"
+    outputs.files(operators.keySet().collect { k -> file("$buildDir/pack/textures/blocks/operator${k}.png")})
+    doLast {
+        def base = file("$buildDir/gen/base_grey.png")
+        def font = file("assets/JetBrainsMono-Bold.ttf")
+        mkdir "$buildDir/pack/textures/blocks"
+        operators.each { k, v ->
+            def out = file("$buildDir/pack/textures/blocks/operator${k}.png")
+            ["magick", "convert", base, "-gravity", "Center",
+             "-fill", "white", "-stroke", "black",
+             "-font", font,
+             "-pointsize", 32,
+             "-draw", "text 0,0 '$v'",
              out].execute().waitForProcessOutput(System.out, System.err)
 
         }
@@ -43,10 +73,16 @@ task generateBlocks {
             def builder = new StreamingJsonBuilder(w)
             builder {
                 format_version([1, 16, 0])
-                (1..100).each { n ->
+                numberRange.each { n ->
                     "numbers:number$n" {
                         textures "number$n"
                         sound "wood"
+                    }
+                }
+                operators.keySet().each { k ->
+                    "numbers:operator$k" {
+                        textures "operator$k"
+                        sound "glass"
                     }
                 }
             }
@@ -63,12 +99,31 @@ task generateTerrain {
                 resource_pack_name "numbers"
                 texture_name "atlas.terrain"
                 texture_data {
-                    (1..100).each { n ->
+                    numberRange.each { n ->
                         "number$n" {
                             textures "textures/blocks/number$n"
                         }
                     }
+                    operators.keySet().each { k ->
+                        "operator$k" {
+                            textures "textures/blocks/operator$k"
+                        }
+                    }
                 }
+            }
+        }
+    }
+}
+
+task generateTexts {
+    outputs.file "$buildDir/pack/texts/en_US.lang"
+    doLast {
+        file("$buildDir/pack/texts/en_US.lang").withWriter { w ->
+            numberRange.each { n ->
+                w.println "tile.numbers:number${n}.name=${n}"
+            }
+            operators.each { k, v ->
+                w.println "tile.numbers:operator${k}.name=${v}"
             }
         }
     }
@@ -102,4 +157,5 @@ task dist(type: Zip) {
     dependsOn assemble
     archiveExtension = "mcpack"
     from "$buildDir/pack"
+    from "assets/pack_icon.png"
 }

@@ -1,9 +1,9 @@
 import groovy.json.StreamingJsonBuilder
 
 task generateBlocks {
-    outputs.files((1..100).collect{ n -> file("$buildDir/pack/blocks/number${n}.json")})
+    outputs.files(numberRange.collect{ n -> file("$buildDir/pack/blocks/number${n}.json")})
     doLast {
-        (1..100).each { n ->
+        numberRange.each { n ->
             file("$buildDir/pack/blocks/number${n}.json").withWriter {w ->
                 def builder = new StreamingJsonBuilder(w)
                 builder {
@@ -25,6 +25,33 @@ task generateBlocks {
                             }
                             "minecraft:block_light_absorption" 0
                             "minecraft:block_light_emission" 0.250
+                        }
+                    }
+                }
+            }
+        }
+        operators.keySet().each { k ->
+            file("$buildDir/pack/blocks/operator${k}.json").withWriter {w ->
+                def builder = new StreamingJsonBuilder(w)
+                builder {
+                    format_version(1, 16, 0)
+                    "minecraft:block" {
+                        description {
+                            identifier "numbers:operator$k"
+                            is_experimental false
+                            register_to_creative_menu true
+                        }
+                        components {
+                            "minecraft:map_color" "#CCCCCC"
+                            "minecraft:destroy_time"(2)
+                            "minecraft:explosion_resistance" 50
+                            "minecraft:friction" 0.8
+                            "minecraft:flammable" {
+                                "flame_odds" 0
+                                "burn_odds" 0
+                            }
+                            "minecraft:block_light_absorption" 0
+                            "minecraft:block_light_emission" 0.35
                         }
                     }
                 }
