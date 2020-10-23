@@ -42,6 +42,14 @@ will draw a horizontal grid starting at your location.
 
 will draw a vertical grid.
 
+```
+/function line100
+```
+
+will draw a number line.
+
+![Screenshort Number Line](doc/line.png)
+
 # Acknowledgements
 
 The font used is the beautiful [JetBrains Mono](https://www.jetbrains.com/lp/mono/). It is freely available.
