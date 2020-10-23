@@ -90,6 +90,17 @@ task generateFunctionVertical {
     }
 }
 
+task generateFunctionLine {
+    outputs.file "$buildDir/pack/functions/line100.mcfunction"
+    doLast {
+        file("$buildDir/pack/functions/line100.mcfunction").withPrintWriter {w ->
+            for (n in 1..100) {
+                w.println "setblock ~$n ~ ~1 numbers:number$n"
+            }
+        }
+    }
+}
+
 task generateManifest {
     outputs.file "$buildDir/pack/manifest.json"
     doLast {

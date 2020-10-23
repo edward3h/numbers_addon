@@ -3,7 +3,7 @@ allprojects {
     apply plugin: 'base'
 
     group 'org.ethelred'
-    version '1.0.1'
+    version '1.0.2'
 
     assemble.dependsOn tasks.matching { it.name.startsWith "generate" }
     build.dependsOn tasks.matching { it.name == "dist" }
