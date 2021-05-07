@@ -5,4 +5,4 @@ bin/
 !gradle-wrapper.jar
 **/build/
 .project
-
+.settings
